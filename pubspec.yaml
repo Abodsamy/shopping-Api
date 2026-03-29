@@ -11,6 +11,7 @@ dependencies:
   flutter:
     sdk: flutter
 
+  provider: ^6.1.2
 
   shared_preferences: ^2.1.1
   cupertino_icons: ^1.0.6
@@ -19,6 +20,7 @@ dependencies:
   hive: ^2.2.3
   http: ^1.2.2
   carousel_slider: ^5.1.2
+  path_provider: ^2.1.4
 
 dev_dependencies:
   flutter_test:

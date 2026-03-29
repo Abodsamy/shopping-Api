@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import '../screen/home_screen.dart';
 import '../screen/cart_screen.dart';
 import '../screen/profile_screen.dart';
-import '../widget/cart_data.dart';
+import '../widget/cart_provider.dart';
 
 class BottomNavBar extends StatefulWidget {
   const BottomNavBar({super.key});
@@ -20,6 +21,8 @@ class _BottomNavBarState extends State<BottomNavBar> {
 
   @override
   Widget build(BuildContext context) {
+    final cart = Provider.of<CartProvider>(context);
+
     final pages = [
       HomeScreen(onCartUpdated: _onCartUpdated),
       CartScreen(onCartUpdated: _onCartUpdated),
@@ -45,7 +48,7 @@ class _BottomNavBarState extends State<BottomNavBar> {
             icon: Stack(
               children: [
                 const Icon(Icons.shopping_cart),
-                if (CartData.cartItems.isNotEmpty)
+                if (cart.cartItems.isNotEmpty)
                   Positioned(
                     right: 0,
                     top: 0,
@@ -60,7 +63,7 @@ class _BottomNavBarState extends State<BottomNavBar> {
                         minHeight: 16,
                       ),
                       child: Text(
-                        CartData.totalItems().toString(),
+                        cart.totalItems().toString(),
                         style: const TextStyle(
                           color: Colors.white,
                           fontSize: 10,

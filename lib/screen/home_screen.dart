@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import '../widget/product_card.dart';
 import '../widget/categories.dart';
 import '../http.dart';
-import '../widget/cart_data.dart';
+import '../widget/cart_provider.dart';
 
 class HomeScreen extends StatefulWidget {
   final VoidCallback onCartUpdated;
@@ -30,10 +31,16 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   void addToCart(Map<String, dynamic> product) {
-    CartData.addItem(product);
-    widget.onCartUpdated();
-    ScaffoldMessenger.of(context)
-        .showSnackBar(const SnackBar(content: Text("Added to Cart")));
+    Provider.of<CartProvider>(
+      context,
+      listen: false,
+    ).addItem(product);
+
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(
+        content: Text("Added to Cart"),
+      ),
+    );
   }
 
   @override
@@ -89,9 +96,13 @@ class _HomeScreenState extends State<HomeScreen> {
                     ),
                     itemBuilder: (context, index) {
                       final product = products[index];
+
                       List<String> images = [];
+
                       if (product['images'] != null) {
-                        images = List<String>.from(product['images']);
+                        images = List<String>.from(
+                          product['images'],
+                        );
                       } else if (product['thumbnail'] != null) {
                         images = [product['thumbnail']];
                       }
