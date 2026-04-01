@@ -2,29 +2,35 @@ import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
 
 class CartProvider extends ChangeNotifier {
-  final Box cartBox = Hive.box('cartBox');
+  final Box box = Hive.box('cartBox');
 
-  List<Map<String, dynamic>> get cartItems {
-    final List data = cartBox.get('cart', defaultValue: []);
+  List<Map<String, dynamic>> cartItems = [];
 
-    return data
-        .map(
-          (item) => Map<String, dynamic>.from(item),
-        )
-        .toList();
+  CartProvider() {
+    loadCart();
+  }
+
+  void loadCart() {
+    final data = box.get('cartItems');
+
+    if (data != null) {
+      cartItems = List<Map<String, dynamic>>.from(data);
+    }
+  }
+
+  void saveCart() {
+    box.put('cartItems', cartItems);
   }
 
   void addItem(Map<String, dynamic> product) {
-    List items = cartItems;
-
-    int index = items.indexWhere(
-      (item) => item['title'] == product['title'],
+    final index = cartItems.indexWhere(
+          (item) => item['title'] == product['title'],
     );
 
     if (index != -1) {
-      items[index]['quantity'] = ((items[index]['quantity'] ?? 1) + 1);
+      cartItems[index]['quantity']++;
     } else {
-      items.add({
+      cartItems.add({
         'title': product['title'],
         'price': product['price'],
         'thumbnail': product['thumbnail'],
@@ -33,38 +39,35 @@ class CartProvider extends ChangeNotifier {
       });
     }
 
-    cartBox.put('cart', items);
-
+    saveCart();
     notifyListeners();
   }
 
   void removeItem(int index) {
-    List items = cartItems;
-
-    items.removeAt(index);
-
-    cartBox.put('cart', items);
-
-    notifyListeners();
-  }
-
-  void clearCart() {
-    cartBox.put('cart', []);
-
+    cartItems.removeAt(index);
+    saveCart();
     notifyListeners();
   }
 
   int totalItems() {
     return cartItems.fold(
       0,
-      (sum, item) => sum + ((item['quantity'] ?? 1) as int),
+          (sum, item) => sum + (item['quantity'] as int),
     );
   }
 
   double totalPrice() {
     return cartItems.fold(
       0.0,
-      (sum, item) => sum + ((item['price'] ?? 0) * (item['quantity'] ?? 1)),
+          (sum, item) =>
+      sum +
+          (item['price'] * item['quantity']),
     );
+  }
+
+  void clearCart() {
+    cartItems.clear();
+    saveCart();
+    notifyListeners();
   }
 }
