@@ -11,8 +11,7 @@ class ProductCubit extends Cubit<ProductState> {
     try {
       emit(ProductLoading());
 
-      final products =
-      await ApiService.fetchProducts();
+      final products = await ApiService.fetchProducts();
 
       emit(ProductLoaded(products));
     } catch (e) {

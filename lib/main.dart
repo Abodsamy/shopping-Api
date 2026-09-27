@@ -8,7 +8,6 @@ import 'firebase_options.dart';
 import 'app_root.dart';
 import 'widget/cart_provider.dart';
 
-
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
@@ -22,17 +21,14 @@ void main() async {
   await Hive.openBox('favoriteBox');
   runApp(
     MultiProvider(
-
       providers: [
         ChangeNotifierProvider(
           create: (_) => CartProvider(),
         ),
-
         ChangeNotifierProvider(
           create: (_) => ThemeProvider(),
         ),
       ],
-
       child: const MyApp(),
     ),
   );
